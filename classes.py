@@ -68,11 +68,58 @@ class Store(Storage):
             st += f'{key}: {value}\n'  # С переносом, чтобы в столбик
         return st
 
-storage_1 = Store(items={'Телефон': 10, 'Компьютер': 20}, capacity=50)  # Аргументы можно для наглядности прописать
 
-storage_1.add('Планшет', 5)
-storage_1.remove('Телефон', 2)
-print(storage_1.get_free_space())
-print(storage_1.get_items())
-print(storage_1.get_unique_items_count())
-print(storage_1)  # Тут репр выполняется
+class Shop(Store):
+    def __init__(self, items, capacity=20):
+        super().__init__(items, capacity)  # Пропихиваем 20, что в Shop по умолчанию, super().__init__ - это ...
+
+    def add(self, name, count):
+        if self.get_unique_items_count() >= 5:
+            return "Слишком много уникальных товаров"
+        else:
+            super().add(self, name, count)
+
+        """
+        Доставить {3} {печеньки} из {склад} в {магазин}. Три действия: 
+        Доставить (перемещение)
+        Забрать (удаление)
+        Привезти (добавление)
+        """
+class Request:
+    def __init__(self, request_str):
+        req_list = request_str.split()
+        action = req_list[0]
+        self.__count = int(req_list[1])
+        self.__item = req_list[2]
+        if action == 'Доставить':
+            self.__from = req_list[4]
+            self.__to = req_list[6]
+        if action == 'Забрать':
+            self.__from = req_list[4]
+            self.__to = None
+        if action == 'Привезти':
+            self.__to = req_list[6]
+            self.__from = None
+
+    def move(self):
+        if self.__to:
+            eval(self.__to).add(self.__item, self.__count)
+        if self.__from:
+            eval(self.__from).remove(self.__item, self.__count)
+
+
+
+
+
+
+
+
+
+        # storage_1 = Store(items={'Телефон': 10, 'Компьютер': 20}, capacity=50)  # Аргументы можно для наглядности прописать
+
+# storage_1.add('Планшет', 5)
+# storage_1.remove('Телефон', 2)
+# print(storage_1.get_free_space())
+# print(storage_1.get_items())
+# print(storage_1.get_unique_items_count())
+# print(storage_1)  # Тут репр выполняется
