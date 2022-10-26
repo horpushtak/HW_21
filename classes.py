@@ -32,10 +32,16 @@ class Store(Storage):
         self.__capacity = capacity
 
     def add(self, name, count):
-        if self.get_free_space() >= count:
-            self.__items[name] += count
+        if name in self.__items.keys():
+            if self.get_free_space() >= count:
+                self.__items[name] += count  # Просто добвить количество
+            else:
+                return "Недостаточно места на складе"
         else:
-            return "Недостаточно места на складе"
+            if self.get_free_space() >= count:
+                self.__items[name] = count  # Сделать в словаре новую запись name = count
+            else:
+                return "Недостаточно места на складе"
 
     def remove(self, name, count):
         if self.get_free_space() > count:
@@ -56,3 +62,17 @@ class Store(Storage):
     def get_unique_items_count(self):
         return len(self.__items.keys())
 
+    def __repr__(self):  # Репр лучше всегда прописывать, причём именно так, чтобы нормально показывал словарь
+        st = ""
+        for key, value in self.__items.items():
+            st += f'{key}: {value}\n'  # С переносом, чтобы в столбик
+        return st
+
+storage_1 = Store(items={'Телефон': 10, 'Компьютер': 20}, capacity=50)  # Аргументы можно для наглядности прописать
+
+storage_1.add('Планшет', 5)
+storage_1.remove('Телефон', 2)
+print(storage_1.get_free_space())
+print(storage_1.get_items())
+print(storage_1.get_unique_items_count())
+print(storage_1)  # Тут репр выполняется
